@@ -9,3 +9,9 @@ Test
 ```
 bash test.sh
 ```
+
+---
+
+golang exec.Command vs. syscall.Exec
+
+https://studygolang.com/articles/2883
