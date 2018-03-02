@@ -15,3 +15,7 @@ bash test.sh
 golang exec.Command vs. syscall.Exec
 
 https://studygolang.com/articles/2883
+
+piping exec.Cmd in golang
+
+https://gist.github.com/kylelemons/1525278
