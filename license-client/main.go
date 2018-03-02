@@ -6,7 +6,7 @@ import "os/exec"
 import "fmt"
 
 func main() {
-	fmt.Println("LICENSE_SERVER: ", os.Getenv("LICENSE_SERVER"))
+    fmt.Println("LICENSE_SERVER: ", os.Getenv("LICENSE_SERVER"))
 
     binary, lookErr := exec.LookPath("curl")
     if lookErr != nil {
