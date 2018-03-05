@@ -19,3 +19,11 @@ https://studygolang.com/articles/2883
 piping exec.Command in golang
 
 https://gist.github.com/kylelemons/1525278
+
+simple usage of golang os/exec package
+
+http://www.01happy.com/golang-os-exec/
+
+detail usage of golang os/exec package
+
+http://blog.csdn.net/chenbaoke/article/details/42556949
