@@ -27,3 +27,15 @@ http://www.01happy.com/golang-os-exec/
 detail usage of golang os/exec package
 
 http://blog.csdn.net/chenbaoke/article/details/42556949
+
+Go by Example: Exec'ing Processes
+
+https://gobyexample.com/execing-processes
+
+Go by Example: Spawning Processes
+
+https://gobyexample.com/spawning-processes
+
+The Go Programming Language :: Package exec
+
+https://golang.org/pkg/os/exec/
