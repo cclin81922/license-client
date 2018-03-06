@@ -59,7 +59,13 @@ func main() {
 
 	   About wcCmd.Stdout = wcOut vs. wcCmd.Stdout = &wcOut
 
-	   see https://stackoverflow.com/questions/13511203/why-cant-i-assign-a-struct-to-an-interface
+	   see
+	   * https://stackoverflow.com/questions/13511203/why-cant-i-assign-a-struct-to-an-interface
+	   * https://medium.com/golangspec/interfaces-in-go-part-i-4ae53a97479c
+	   * https://medium.com/golangspec/interfaces-in-go-part-ii-d5057ffdb0a6
+	   * https://gobyexample.com/interfaces ... interface
+	   * https://tour.golang.org/moretypes/4 ... pointer to struct
+	   * https://tour.golang.org/moretypes/1 ... pointer
 	*/
 	wcCmd := exec.Command("wc", "-c")
 	wcCmd.Stdin = strings.NewReader("12345")
