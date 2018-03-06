@@ -1,3 +1,5 @@
+// fork from https://gist.github.com/kylelemons/1525278
+
 package lib
 
 import (
