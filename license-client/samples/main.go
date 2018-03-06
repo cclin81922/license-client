@@ -45,6 +45,18 @@ func main() {
 
 	// case 4
 	// tag: stdin, stdout
+	/*
+	   About wcCmd.Stdin = strings.NewReader("12345")
+
+	   type of wcCmd.Stdin is interface io.Reader which has method Read(p []byte) (n int, err error)
+	   function strings.NewReader returns pointer to struct strings.Reader (i.e. *Reader)
+	   struct strings.Reader has method Read(b []byte) (n int, err error) so it is a kind of interface io.Reader
+
+	   About wcCmd.Stdout = &wcOut
+
+	   type of wcCmd.Stdout is interface io.Writer which has method Write(p []byte) (n int, err error)
+	   struct bytes.Buffer has method Write(p []byte) (n int, err error) so it is a kind of interface io.Writer
+	*/
 	wcCmd := exec.Command("wc", "-c")
 	wcCmd.Stdin = strings.NewReader("12345")
 	var wcOut bytes.Buffer
