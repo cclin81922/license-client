@@ -56,6 +56,10 @@ func main() {
 
 	   type of wcCmd.Stdout is interface io.Writer which has method Write(p []byte) (n int, err error)
 	   struct bytes.Buffer has method Write(p []byte) (n int, err error) so it is a kind of interface io.Writer
+
+	   About wcCmd.Stdout = wcOut vs. wcCmd.Stdout = &wcOut
+
+	   see https://stackoverflow.com/questions/13511203/why-cant-i-assign-a-struct-to-an-interface
 	*/
 	wcCmd := exec.Command("wc", "-c")
 	wcCmd.Stdin = strings.NewReader("12345")
