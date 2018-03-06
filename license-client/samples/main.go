@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"os/exec"
 	"strings"
+
+	"github.com/cclin81922/license-client/license-client/samples/lib"
 )
 
 func main() {
@@ -54,8 +56,8 @@ func main() {
 	fmt.Println("> wc -c")
 	fmt.Println(wcOut.String())
 
-	//case 5 :: to pass in one command-line string
-	//tag: bash -c
+	// case 5 :: to pass in one command-line string
+	// tag: bash -c
 	lsCmd := exec.Command("bash", "-c", "ls -a -l -h")
 	lsOut, dateErr := lsCmd.Output()
 	if dateErr != nil {
@@ -63,6 +65,9 @@ func main() {
 	}
 	fmt.Println("> ls -a -l -h")
 	fmt.Println(string(lsOut))
+
+	// case 6 :: to pipe multiple exec.Command instances
+	lib.Pipe()
 
 	fmt.Println("End")
 
