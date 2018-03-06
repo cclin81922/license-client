@@ -39,3 +39,7 @@ https://gobyexample.com/spawning-processes
 The Go Programming Language :: Package exec
 
 https://golang.org/pkg/os/exec/
+
+* Function Command https://golang.org/pkg/os/exec/#Command
+* Struct Cmd https://golang.org/pkg/os/exec/#Cmd 
+* Method Output defined on Cmd struct type https://golang.org/pkg/os/exec/#Cmd.Output
