@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 )
@@ -64,6 +65,7 @@ func main() {
 	// curl --cert ./data/pki/client.cert.pem --key ./data/pki/client.key.pem --cacert ./data/pki/ca.cert.pem ${LICENSE_SERVER}
 	// []string{"curl", "--cert", "./data/pki/client.cert.pem", "--key", "./data/pki/client.key.pem", "--cacert", "./data/pki/ca.cert.pem", os.Getenv("LICENSE_SERVER")}
 	curlCmd := exec.Command("curl", "--cert", "./data/pki/client.cert.pem", "--key", "./data/pki/client.key.pem", "--cacert", "./data/pki/ca.cert.pem", licenseServer)
+
 	curlOut, curlErr := curlCmd.Output()
 	if curlErr != nil {
 		panic(curlErr)
@@ -75,6 +77,25 @@ func main() {
 	// []string{"dd", "if=./data/src.des3"}
 	// []string{"openssl", "des3", "-d", "-k", string(curlOut)}
 	// []string{"tar", "zxf", "-", "-C", "/tmp"}
+	ddCmd := exec.Command("dd", "if=./data/src.des3")
+	opensslCmd := exec.Command("openssl", "des3", "-d", "-k", string(curlOut))
+	tarCmd := exec.Command("tar", "zxf", "-", "-C", "/tmp")
+
+	// Run the pipeline
+	output, stderr, err := Pipeline(ddCmd, opensslCmd, tarCmd)
+	if err != nil {
+		log.Printf("%s", err)
+	}
+
+	// Print the stdout, if any
+	if len(output) > 0 {
+		log.Printf("%s", output)
+	}
+
+	// Print the stderr, if any
+	if len(stderr) > 0 {
+		log.Printf("%s", stderr)
+	}
 
 	// command 3
 	// mv /opt/src /path/to/target
