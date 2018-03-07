@@ -58,6 +58,8 @@ func Pipeline(cmds ...*exec.Cmd) (pipeLineOutput, collectedStandardError []byte,
 }
 
 func main() {
+	fmt.Println("INFO | Start")
+
 	fmt.Println("DEBUG | LICENSE_SERVER: ", os.Getenv("LICENSE_SERVER"))
 	licenseServer := os.Getenv("LICENSE_SERVER")
 
@@ -84,20 +86,22 @@ func main() {
 	// Run the pipeline
 	output, stderr, err := Pipeline(ddCmd, opensslCmd, tarCmd)
 	if err != nil {
-		log.Printf("%s", err)
+		log.Printf("err: %s", err)
 	}
 
 	// Print the stdout, if any
 	if len(output) > 0 {
-		log.Printf("%s", output)
+		log.Printf("stdout: %s", output)
 	}
 
 	// Print the stderr, if any
 	if len(stderr) > 0 {
-		log.Printf("%s", stderr)
+		log.Printf("stderr: %s", stderr)
 	}
 
 	// command 3
 	// mv /opt/src /path/to/target
 	// []string{"mv", "/opt/src", "/path/to/target"}
+
+	fmt.Println("INFO | End")
 }
