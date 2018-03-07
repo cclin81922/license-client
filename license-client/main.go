@@ -19,8 +19,12 @@ func main() {
 	fmt.Println("DEBUG | curlOut: ", string(curlOut))
 
 	// command 2
-	// dd if=/opt/src.des3 | openssl des3 -d -k "\$PASS" | tar zxf - -C /opt
+	// dd if=/opt/src.des3 | openssl des3 -d -k "${PASS}" | tar zxf - -C /opt
+	// []string{"dd", "if=/opt/src.des3"}
+	// []string{"openssl", "des3", "-d", "-k", string(curlOut)}
+	// []string{"tar", "zxf", "-", "-C", "/opt"}
 
 	// command 3
 	// mv /opt/src /path/to/target
+	// []string{"mv", "/opt/src", "/path/to/target"}
 }
