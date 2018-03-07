@@ -91,7 +91,24 @@ func main() {
 
 	// case 6 :: to pipe multiple exec.Command instances
 	lib.Pipe()
+	fmt.Println("")
 
+	// case 7
+	// tag: syscall
+	// NOTE: this case cannot be run in vs code debug.
+	/*
+		binary, lookErr := exec.LookPath("curl")
+		if lookErr != nil {
+			panic(lookErr)
+		}
+		args := []string{"curl", "--version"}
+		env := os.Environ()
+		execErr := syscall.Exec(binary, args, env)
+		if execErr != nil {
+			panic(execErr)
+		}*/
+
+	// NOTE: this will not be run when case 7 is enabled.
 	fmt.Println("End")
 
 }

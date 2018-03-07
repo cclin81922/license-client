@@ -1,3 +1,11 @@
+Usage
+
+```
+go run main.go
+```
+
+---
+
 golang exec.Command vs. syscall.Exec
 
 https://studygolang.com/articles/2883
