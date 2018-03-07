@@ -45,6 +45,29 @@ func main() {
 
 	// case 4
 	// tag: stdin, stdout
+	/*
+	   About wcCmd.Stdin = strings.NewReader("12345")
+
+	   type of wcCmd.Stdin is interface io.Reader which has method Read(p []byte) (n int, err error)
+	   function strings.NewReader returns pointer to struct strings.Reader (i.e. *Reader)
+	   struct strings.Reader has method Read(b []byte) (n int, err error) so it is a kind of interface io.Reader
+
+	   About wcCmd.Stdout = &wcOut
+
+	   type of wcCmd.Stdout is interface io.Writer which has method Write(p []byte) (n int, err error)
+	   struct bytes.Buffer has method Write(p []byte) (n int, err error) so it is a kind of interface io.Writer
+
+	   About wcCmd.Stdout = wcOut vs. wcCmd.Stdout = &wcOut
+
+	   see
+	   * https://medium.com/@agileseeker/go-interfaces-pointers-4d1d98d5c9c6
+	   * https://stackoverflow.com/questions/27178635/cast-a-struct-pointer-to-interface-pointer-in-golang
+	   * https://medium.com/golangspec/interfaces-in-go-part-i-4ae53a97479c
+	   * https://medium.com/golangspec/interfaces-in-go-part-ii-d5057ffdb0a6
+	   * https://gobyexample.com/interfaces ... interface
+	   * https://tour.golang.org/moretypes/4 ... pointer to struct
+	   * https://tour.golang.org/moretypes/1 ... pointer
+	*/
 	wcCmd := exec.Command("wc", "-c")
 	wcCmd.Stdin = strings.NewReader("12345")
 	var wcOut bytes.Buffer
