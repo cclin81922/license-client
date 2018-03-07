@@ -13,7 +13,7 @@ func main() {
         panic(lookErr)
     }
 
-    args := []string{"curl", "--cert", "/tmp/pki/client.cert.pem", "--key", "/tmp/pki/client.key.pem", "--cacert", "/tmp/pki/ca.cert.pem", os.Getenv("LICENSE_SERVER")}
+    args := []string{"curl", "--cert", "./data/pki/client.cert.pem", "--key", "./data/pki/client.key.pem", "--cacert", "./data/pki/ca.cert.pem", os.Getenv("LICENSE_SERVER")}
 
     env := os.Environ()
 
