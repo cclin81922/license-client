@@ -1,24 +1,107 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
+	"encoding/csv"
+	"io"
 	"log"
 	"os"
 	"os/exec"
 )
 
+var (
+	lcMode     string
+	lcLog      string
+	lcCert     string
+	lcKey      string
+	lcCacert   string
+	lcData     string
+	lcManifest string
+)
+
+func init() {
+	lcMode = os.Getenv("LC_MODE")
+	if len(lcMode) == 0 {
+		lcMode = "DEBUG"
+	}
+
+	lcLog = os.Getenv("LC_LOG")
+	if len(lcLog) == 0 {
+		lcLog = "/tmp/lc.log"
+	}
+
+	if lcMode != "DEBUG" {
+		logFile, err := os.Create(lcLog)
+
+		if err != nil {
+			panic(err)
+		}
+
+		log.SetOutput(logFile)
+	}
+
+	lcCert = os.Getenv("LC_CERT")
+	if len(lcCert) == 0 {
+		lcCert = "./data/pki/client.cert.pem"
+	}
+
+	lcKey = os.Getenv("LC_KEY")
+	if len(lcKey) == 0 {
+		lcKey = "./data/pki/client.key.pem"
+	}
+
+	lcCacert = os.Getenv("LC_CACERT")
+	if len(lcCacert) == 0 {
+		lcCacert = "./data/pki/ca.cert.pem"
+	}
+
+	lcData = os.Getenv("LC_DATA")
+	if len(lcData) == 0 {
+		lcData = "./data/src.des3"
+	}
+
+	lcManifest = os.Getenv("LC_MANIFEST")
+	if len(lcManifest) == 0 {
+		lcManifest = "./data/manifest"
+	}
+}
+
+type Puzzle struct {
+	From string
+	To   string
+}
+
 func Activate() {
 	log.Println("INFO | Activating")
 
+	// Get puzzles manifest
+	csvFile, _ := os.Open(lcManifest)
+	reader := csv.NewReader(bufio.NewReader(csvFile))
+	var puzzles []Puzzle
+	for {
+		line, error := reader.Read()
+		if error == io.EOF {
+			break
+		} else if error != nil {
+			log.Fatal(error)
+		}
+		puzzles = append(puzzles, Puzzle{
+			From: line[0],
+			To:   line[1],
+		})
+	}
+	log.Println("DEBUG | ", puzzles)
+
 	// TODO
-	// mv /opt/src /path/to/target
-	// []string{"mv", "/opt/src", "/path/to/target"}
+	// Move puzzles from source to destination
 }
 
 func Destroy() {
 	log.Println("INFO | Destroying")
 
 	// TODO
+	// Remove puzzles
 
 	os.Exit(1)
 }
@@ -70,57 +153,6 @@ func Pipeline(cmds ...*exec.Cmd) (pipeLineOutput, collectedStandardError []byte,
 
 	// Return the pipeline output and the collected standard error
 	return output.Bytes(), stderr.Bytes(), nil
-}
-
-var (
-	lcMode   string
-	lcLog    string
-	lcCert   string
-	lcKey    string
-	lcCacert string
-	lcData   string
-)
-
-func init() {
-	lcMode = os.Getenv("LC_MODE")
-	if len(lcMode) == 0 {
-		lcMode = "DEBUG"
-	}
-
-	lcLog = os.Getenv("LC_LOG")
-	if len(lcLog) == 0 {
-		lcLog = "/tmp/lc.log"
-	}
-
-	if lcMode != "DEBUG" {
-		logFile, err := os.Create(lcLog)
-
-		if err != nil {
-			panic(err)
-		}
-
-		log.SetOutput(logFile)
-	}
-
-	lcCert = os.Getenv("LC_CERT")
-	if len(lcCert) == 0 {
-		lcCert = "./data/pki/client.cert.pem"
-	}
-
-	lcKey = os.Getenv("LC_KEY")
-	if len(lcKey) == 0 {
-		lcKey = "./data/pki/client.key.pem"
-	}
-
-	lcCacert = os.Getenv("LC_CACERT")
-	if len(lcCacert) == 0 {
-		lcCacert = "./data/pki/ca.cert.pem"
-	}
-
-	lcData = os.Getenv("LC_DATA")
-	if len(lcData) == 0 {
-		lcData = "./data/src.des3"
-	}
 }
 
 func main() {
