@@ -97,17 +97,23 @@ func Activate() {
 			To:   line[1],
 		})
 	}
-	log.Println("DEBUG | ", puzzles)
+	log.Println("DEBUG | puzzles:", puzzles)
 
-	// TODO
-	// Move puzzles from source to destination
+	// Move puzzles
+	for _, puzzle := range puzzles {
+		if renameErr := os.Rename("/tmp/"+puzzle.From, puzzle.To); renameErr != nil {
+			log.Fatal(renameErr)
+		}
+	}
+
+	log.Println("INFO | End")
 }
 
 func Destroy() {
 	log.Println("INFO | Destroying")
 
-	// TODO
 	// Remove puzzles
+	os.Remove("/tmp/dummy.txt")
 
 	os.Exit(1)
 }
@@ -213,6 +219,4 @@ func main() {
 	}
 
 	Activate()
-
-	log.Println("INFO | End")
 }
