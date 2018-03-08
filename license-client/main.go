@@ -72,6 +72,57 @@ func Pipeline(cmds ...*exec.Cmd) (pipeLineOutput, collectedStandardError []byte,
 	return output.Bytes(), stderr.Bytes(), nil
 }
 
+var (
+	lcMode   string
+	lcLog    string
+	lcCert   string
+	lcKey    string
+	lcCacert string
+	lcData   string
+)
+
+func init() {
+	lcMode = os.Getenv("LC_MODE")
+	if len(lcMode) == 0 {
+		lcMode = "DEBUG"
+	}
+
+	lcLog = os.Getenv("LC_LOG")
+	if len(lcLog) == 0 {
+		lcLog = "/tmp/lc.log"
+	}
+
+	if lcMode != "DEBUG" {
+		logFile, err := os.Create(lcLog)
+
+		if err != nil {
+			panic(err)
+		}
+
+		log.SetOutput(logFile)
+	}
+
+	lcCert = os.Getenv("LC_CERT")
+	if len(lcCert) == 0 {
+		lcCert = "./data/pki/client.cert.pem"
+	}
+
+	lcKey = os.Getenv("LC_KEY")
+	if len(lcKey) == 0 {
+		lcKey = "./data/pki/client.key.pem"
+	}
+
+	lcCacert = os.Getenv("LC_CACERT")
+	if len(lcCacert) == 0 {
+		lcCacert = "./data/pki/ca.cert.pem"
+	}
+
+	lcData = os.Getenv("LC_DATA")
+	if len(lcData) == 0 {
+		lcData = "./data/src.des3"
+	}
+}
+
 func main() {
 	log.Println("INFO | Start")
 
@@ -87,7 +138,7 @@ func main() {
 	//
 	// shell: curl --cert ./data/pki/client.cert.pem --key ./data/pki/client.key.pem --cacert ./data/pki/ca.cert.pem ${LICENSE_SERVER}
 	// golang: []string{"curl", "--cert", "./data/pki/client.cert.pem", "--key", "./data/pki/client.key.pem", "--cacert", "./data/pki/ca.cert.pem", os.Getenv("LICENSE_SERVER")}
-	curlCmd := exec.Command("curl", "--cert", "./data/pki/client.cert.pem", "--key", "./data/pki/client.key.pem", "--cacert", "./data/pki/ca.cert.pem", licenseServer)
+	curlCmd := exec.Command("curl", "--cert", lcCert, "--key", lcKey, "--cacert", lcCacert, licenseServer)
 
 	curlOut, curlErr := curlCmd.Output()
 	if curlErr != nil {
@@ -103,7 +154,7 @@ func main() {
 	// golang: []string{"dd", "if=./data/src.des3"}
 	// golang: []string{"openssl", "des3", "-d", "-k", string(curlOut)}
 	// golang: []string{"tar", "zxf", "-", "-C", "/tmp"}
-	ddCmd := exec.Command("dd", "if=./data/src.des3")
+	ddCmd := exec.Command("dd", "if="+lcData)
 	opensslCmd := exec.Command("openssl", "des3", "-d", "-k", dataSecret)
 	tarCmd := exec.Command("tar", "zxf", "-", "-C", "/tmp")
 
