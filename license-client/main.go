@@ -76,7 +76,13 @@ func Activate() {
 	log.Println("INFO | Activating")
 
 	// Get puzzles manifest
-	csvFile, _ := os.Open(lcManifest)
+	csvFile, csvErr := os.Open(lcManifest)
+
+	if csvErr != nil {
+		log.Fatal(csvErr)
+	}
+	defer csvFile.Close()
+
 	reader := csv.NewReader(bufio.NewReader(csvFile))
 	var puzzles []Puzzle
 	for {
