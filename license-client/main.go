@@ -2,11 +2,26 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
 )
+
+func Activate() {
+	log.Println("INFO | Activating")
+
+	// TODO
+	// mv /opt/src /path/to/target
+	// []string{"mv", "/opt/src", "/path/to/target"}
+}
+
+func Destroy() {
+	log.Println("INFO | Destroying")
+
+	// TODO
+
+	os.Exit(1)
+}
 
 // Pipeline strings together the given exec.Cmd commands in a similar fashion
 // to the Unix pipeline.  Each command's standard output is connected to the
@@ -58,50 +73,57 @@ func Pipeline(cmds ...*exec.Cmd) (pipeLineOutput, collectedStandardError []byte,
 }
 
 func main() {
-	fmt.Println("INFO | Start")
+	log.Println("INFO | Start")
 
-	fmt.Println("DEBUG | LICENSE_SERVER: ", os.Getenv("LICENSE_SERVER"))
+	// get license server location
 	licenseServer := os.Getenv("LICENSE_SERVER")
+	if len(licenseServer) == 0 {
+		log.Println("ERROR | Missing LICENSE_SERVER")
+		Destroy()
+	}
+	log.Println("DEBUG | licenseServer:", licenseServer)
 
-	// command 1
-	// curl --cert ./data/pki/client.cert.pem --key ./data/pki/client.key.pem --cacert ./data/pki/ca.cert.pem ${LICENSE_SERVER}
-	// []string{"curl", "--cert", "./data/pki/client.cert.pem", "--key", "./data/pki/client.key.pem", "--cacert", "./data/pki/ca.cert.pem", os.Getenv("LICENSE_SERVER")}
+	// run licensing step 1
+	//
+	// shell: curl --cert ./data/pki/client.cert.pem --key ./data/pki/client.key.pem --cacert ./data/pki/ca.cert.pem ${LICENSE_SERVER}
+	// golang: []string{"curl", "--cert", "./data/pki/client.cert.pem", "--key", "./data/pki/client.key.pem", "--cacert", "./data/pki/ca.cert.pem", os.Getenv("LICENSE_SERVER")}
 	curlCmd := exec.Command("curl", "--cert", "./data/pki/client.cert.pem", "--key", "./data/pki/client.key.pem", "--cacert", "./data/pki/ca.cert.pem", licenseServer)
 
 	curlOut, curlErr := curlCmd.Output()
 	if curlErr != nil {
-		panic(curlErr)
+		log.Printf("ERROR | curlErr: %s\n", curlErr)
+		Destroy()
 	}
-	fmt.Println("DEBUG | curlOut: ", string(curlOut))
+	dataSecret := string(curlOut)
+	log.Println("DEBUG | dataSecret:", dataSecret)
 
-	// command 2
-	// dd if=./data/src.des3 | openssl des3 -d -k "${PASS}" | tar zxf - -C /tmp
-	// []string{"dd", "if=./data/src.des3"}
-	// []string{"openssl", "des3", "-d", "-k", string(curlOut)}
-	// []string{"tar", "zxf", "-", "-C", "/tmp"}
+	// run licensing step 2
+	//
+	// shell: dd if=./data/src.des3 | openssl des3 -d -k "${PASS}" | tar zxf - -C /tmp
+	// golang: []string{"dd", "if=./data/src.des3"}
+	// golang: []string{"openssl", "des3", "-d", "-k", string(curlOut)}
+	// golang: []string{"tar", "zxf", "-", "-C", "/tmp"}
 	ddCmd := exec.Command("dd", "if=./data/src.des3")
-	opensslCmd := exec.Command("openssl", "des3", "-d", "-k", string(curlOut))
+	opensslCmd := exec.Command("openssl", "des3", "-d", "-k", dataSecret)
 	tarCmd := exec.Command("tar", "zxf", "-", "-C", "/tmp")
 
-	// Run the pipeline
-	output, stderr, err := Pipeline(ddCmd, opensslCmd, tarCmd)
-	if err != nil {
-		log.Printf("err: %s", err)
+	decryptOut, decryptStderr, decryptErr := Pipeline(ddCmd, opensslCmd, tarCmd)
+	if decryptErr != nil {
+		log.Printf("ERROR | decryptErr: %s\n", decryptErr)
+		Destroy()
 	}
 
 	// Print the stdout, if any
-	if len(output) > 0 {
-		log.Printf("stdout: %s", output)
+	if len(decryptOut) > 0 {
+		log.Printf("DEBUG | decryptOut: %s\n", decryptOut)
 	}
 
 	// Print the stderr, if any
-	if len(stderr) > 0 {
-		log.Printf("stderr: %s", stderr)
+	if len(decryptStderr) > 0 {
+		log.Printf("DEBUG | decryptStderr: %s\n", decryptStderr)
 	}
 
-	// command 3
-	// mv /opt/src /path/to/target
-	// []string{"mv", "/opt/src", "/path/to/target"}
+	Activate()
 
-	fmt.Println("INFO | End")
+	log.Println("INFO | End")
 }
