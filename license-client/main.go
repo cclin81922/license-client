@@ -75,7 +75,7 @@ func Pipeline(cmds ...*exec.Cmd) (pipeLineOutput, collectedStandardError []byte,
 func main() {
 	log.Println("INFO | Start")
 
-	// get license server location
+	// Get license server location
 	licenseServer := os.Getenv("LICENSE_SERVER")
 	if len(licenseServer) == 0 {
 		log.Println("ERROR | Missing LICENSE_SERVER")
@@ -83,7 +83,7 @@ func main() {
 	}
 	log.Println("DEBUG | licenseServer:", licenseServer)
 
-	// run licensing step 1
+	// Run licensing step 1
 	//
 	// shell: curl --cert ./data/pki/client.cert.pem --key ./data/pki/client.key.pem --cacert ./data/pki/ca.cert.pem ${LICENSE_SERVER}
 	// golang: []string{"curl", "--cert", "./data/pki/client.cert.pem", "--key", "./data/pki/client.key.pem", "--cacert", "./data/pki/ca.cert.pem", os.Getenv("LICENSE_SERVER")}
@@ -97,7 +97,7 @@ func main() {
 	dataSecret := string(curlOut)
 	log.Println("DEBUG | dataSecret:", dataSecret)
 
-	// run licensing step 2
+	// Run licensing step 2
 	//
 	// shell: dd if=./data/src.des3 | openssl des3 -d -k "${PASS}" | tar zxf - -C /tmp
 	// golang: []string{"dd", "if=./data/src.des3"}
